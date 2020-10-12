@@ -82,7 +82,7 @@ while True:
         text = pygame.font.SysFont("宋体", 48)
         text_fm = text.render("eating", 1, (255, 0, 0))
         window.blit(text_fm, (150, 200))
-        # 蛇身字典
+        # 添加蛇身
         snake_s = {"head": 0, "color": (255, 0, 0), "x": x, "y": y, "dirction": "right"}
         snake_list.append(snake_s)
     pygame.display.update()
