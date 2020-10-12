@@ -2,6 +2,7 @@
 2020年10月12日09:19:19
 18计科本2班
 贪吃蛇
+1、遇到食物，并吃掉
 '''
 
 import pygame
@@ -24,6 +25,11 @@ Magenta =(255,0,255)
 # 初始化
 x = 0
 y = 0
+
+# 蛇身字典
+snake_dict = {"head":1,"color":(255,0,0),"x":x,"y":y,"dirction":"right"}
+# 蛇列表
+snake_list = [snake_dict]
 
 f_x = random.randrange(0,w_with-s_with)
 f_y = random.randrange(0, w_heigth - s_heigth)
@@ -63,7 +69,7 @@ while True:
             x += stup
     # 画一个矩形代表蛇
     pygame.draw.rect(window,Green1,(x,y,s_with,s_heigth))
-
+    # 画食物
     pygame.draw.rect(window, Magenta, (f_x, f_y, s_with, s_heigth))
     # 判断是否到达边缘
     if x < 0 or x > w_with-s_with:
@@ -72,10 +78,11 @@ while True:
         is_stop = True
 
     # 判定食物是否被吃
-    if y == f_y:
-        if direction == "right":
-            if x+s_with == f_x:
-                # 遇到食物
-                s_with +=s_with
-
+    if f_y - s_with < y and y< f_y+ s_with and f_x - s_with < x and x < f_x +s_with:
+        text = pygame.font.SysFont("宋体", 48)
+        text_fm = text.render("eating", 1, (255, 0, 0))
+        window.blit(text_fm, (150, 200))
+        # 蛇身字典
+        snake_s = {"head": 0, "color": (255, 0, 0), "x": x, "y": y, "dirction": "right"}
+        snake_list.append(snake_s)
     pygame.display.update()
