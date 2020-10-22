@@ -1,14 +1,15 @@
 '''
-2020年10月21日14:23:05
+2020年10月22日09:38:54
 肖光鼎
 贪吃蛇游戏
 实现的功能：
 1、显示速度，分数
 2、按空格键暂停游戏
 '''
-import pygame
-import sys
 import random
+import sys
+
+import pygame
 
 # 窗体大小
 w_with = 500
