@@ -22,22 +22,61 @@ import pygame
 
 
 # 蛇身类
-class snake_body:
+class Snake_body:
     def __init__(self, postion, color, direction):
         self.postion = postion
         self.color = color
         self.direction = direction
 
+    # 添加到蛇身上
     def add_to_snake(self, snake):
         snake.add(self)
 
+
+# 蛇类
+class Snake:
+    def __init__(self, v, size):
+        self.body_list = []
+        self.v = v
+        self.size = size
+
+    # 添加到蛇身上
+    def add(self, body):
+        self.body_list.append(body)
+
+    # 画蛇
     def draw(self, window):
-        for s in snake_list:
-            snake_color = s.get("color")
+        for s in self.body_list:
+            color = s.get("color")
             snx = s.get("x")
             sny = s.get("y")
-            s_size = s.get("size")
-            pygame.draw.rect(window, snake_color, (snx, sny, s_size, s_size))
+            pygame.draw.rect(window, snake_color, (snx, sny, self.size, self.size))
+
+    # 移动
+    def run(self):
+        pass
+
+    # 吃食物
+    def eat(self, food):
+        pass
+
+
+# 食物类
+class Food:
+    def __init__(self, postion, color, ):
+        self.postion = postion
+        self.color = color
+
+    # 食物被吃
+    def eated(self, snake):
+        # 吃到蛇的肚子里
+        snake.eat(self)
+
+    # 生产食物
+    def new_food(self, window):
+        f_x = random.randrange(0, w_with - s_size)
+        f_y = random.randrange(0, w_height - s_size)
+        pygame.draw.rect(window, snake_color, (f_x, f_y, self.size, self.size))
 
 
 # 窗体大小
