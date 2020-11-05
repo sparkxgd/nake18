@@ -22,9 +22,10 @@ import pygame
 
 
 # 蛇身类
-class Snake_body:
-    def __init__(self, postion, color, direction):
-        self.postion = postion
+class SnakeBody:
+    def __init__(self, x=0, y=0, color=(255, 255, 0), direction="right"):
+        self.x = x
+        self.y = y
         self.color = color
         self.direction = direction
 
@@ -35,10 +36,12 @@ class Snake_body:
 
 # 蛇类
 class Snake:
-    def __init__(self, v, size):
-        self.body_list = []
+    def __init__(self, v=20, game=None):
+        head = SnakeBody()
+        self.body_list = [head]
         self.v = v
-        self.size = size
+        self.size = game.size
+        self.direction = head.direction
 
     # 添加到蛇身上
     def add(self, body):
@@ -47,180 +50,45 @@ class Snake:
     # 画蛇
     def draw(self, window):
         for s in self.body_list:
-            color = s.get("color")
-            snx = s.get("x")
-            sny = s.get("y")
-            pygame.draw.rect(window, snake_color, (snx, sny, self.size, self.size))
+            color = s.color
+            snx = s.x
+            sny = s.y
+            pygame.draw.rect(window, color, (snx, sny, self.size, self.size))
 
     # 移动
-    def run(self):
-        pass
+    def run(self, direction):
+        if direction != None:
+            self.direction = direction
 
-    # 吃食物
-    def eat(self, food):
-        pass
-
-
-# 食物类
-class Food:
-    def __init__(self, postion, color, ):
-        self.postion = postion
-        self.color = color
-
-    # 食物被吃
-    def eated(self, snake):
-        # 吃到蛇的肚子里
-        snake.eat(self)
-
-    # 生产食物
-    def new_food(self, window):
-        f_x = random.randrange(0, w_with - s_size)
-        f_y = random.randrange(0, w_height - s_size)
-        pygame.draw.rect(window, snake_color, (f_x, f_y, self.size, self.size))
-
-
-# 窗体大小
-w_with = 500
-w_height = 500
-# 蛇身
-s_size = 20
-# 背景色
-b_color = (0, 134, 139)
-# 蛇的颜色
-snake_color = (255, 0, 255)
-# 食物的颜色
-food_color = (0, 0, 255)
-# 蛇的位置
-x = 0
-y = 0
-
-# 移动方向
-direct = "right"
-# 移动步伐
-stup = 20
-# 是否可以移动
-is_stop = False
-# 积分
-score = 0
-pygame.init()
-window = pygame.display.set_mode((w_with, w_height))
-pygame.display.set_caption("我的贪吃蛇游戏")
-
-# 蛇身
-snake = {"head": 1, "color": (255, 255, 0), "x": x, "y": y, "derect": "right", "size": s_size}
-# 蛇身列表
-snake_list = [snake]
-
-
-# 食物的位置
-def get_x_y():
-    f_x = random.randrange(0, w_with - s_size)
-    f_y = random.randrange(0, w_height - s_size)
-    return f_x, f_y
-
-
-def get_color():
-    r = random.randrange(0, 256)
-    g = random.randrange(0, 256)
-    b = random.randrange(0, 256)
-    return r, g, b
-
-
-def draw_snake(window):
-    # print(snake_list)
-    for s in snake_list:
-        snake_color = s.get("color")
-        snx = s.get("x")
-        sny = s.get("y")
-        s_size = s.get("size")
-        pygame.draw.rect(window, snake_color, (snx, sny, s_size, s_size))
-
-
-def show_core(info):
-    infos = "score:" + str(info)
-    text = pygame.font.SysFont("宋体", 30)
-    text_fm = text.render(infos, 1, (255, 255, 0))
-    text_fm2 = text.render("speed:" + str(stup), 1, (255, 255, 0))
-    window.blit(text_fm, (250, 50))
-    window.blit(text_fm2, (100, 50))
-
-
-f_x, f_y = get_x_y()
-
-while True:
-    pygame.time.wait(200)
-
-    # 添加键盘事件的监听
-    for even in pygame.event.get():
-        if even.type == pygame.QUIT:
-            sys.exit()
-
-        elif even.type == pygame.KEYDOWN:
-            if even.key == pygame.K_UP:
-                direct = "up"
-            elif even.key == pygame.K_DOWN:
-                direct = "down"
-            elif even.key == pygame.K_RIGHT:
-                direct = "right"
-            elif even.key == pygame.K_LEFT:
-                direct = "left"
-            elif even.key == pygame.K_SPACE:
-                if is_stop:
-                    is_stop = False
-                else:
-                    is_stop = True
-
-    if not is_stop:
-        # 更新蛇位置
-        # print("========更新蛇位置========")
-        # print(snake_list)
-        # t_x = 0
-        # t_y = 0
-        t_x_0 = snake_list[0].get("x")
-        t_y_0 = snake_list[0].get("y")
-        for i in range(1, len(snake_list)):
-            # print("%d :(%s，%s)" %(i,snake_list[i-1].get("x"),snake_list[i-1].get("y")))
-            t_x = snake_list[i].get("x")
-            t_y = snake_list[i].get("y")
-            snake_list[i]["x"] = t_x_0
-            snake_list[i]["y"] = t_y_0
+        # 采用坐标交互算法进行移动
+        t_x_0 = self.body_list[0].x
+        t_y_0 = self.body_list[0].y
+        for i in range(1, len(self.body_list)):
+            t_x = self.body_list[i].x
+            t_y = self.body_list[i].y
+            self.body_list[i].x = t_x_0
+            self.body_list[i].y = t_y_0
 
             t_x_0 = t_x
             t_y_0 = t_y
 
         # 移动
-        if direct == "up":
-            snake_list[0]["y"] -= stup
-        elif direct == "down":
-            snake_list[0]["y"] += stup
-        elif direct == "right":
-            snake_list[0]["x"] += stup
-        elif direct == "left":
-            snake_list[0]["x"] -= stup
+        if self.direction == "up":
+            self.body_list[0].y -= self.size
+        elif self.direction == "down":
+            self.body_list[0].y += self.size
+        elif self.direction == "right":
+            self.body_list[0].x += self.size
+        elif self.direction == "left":
+            self.body_list[0].x -= self.size
 
-    # 边界的判定
-    if snake_list[0]["x"] < 0 or snake_list[0]["x"] > w_with - s_size or snake_list[0]["y"] < 0 or snake_list[0][
-        "y"] > w_height - s_size:
-        is_stop = True
-
-    window.fill(b_color)
-    # 显示分数
-    show_core(score)
-    # 判定吃食物
-    if f_x - s_size < snake_list[0]["x"] and snake_list[0]["x"] < f_x + s_size and f_y - s_size < snake_list[0]["y"] and \
-            snake_list[0]["y"] < f_y + s_size:
-        text = pygame.font.SysFont("宋体", 48)
-        text_fm = text.render("eating food", 1, (255, 123, 22))
-        window.blit(text_fm, (100, 100))
-        # 吃掉食物（改变食物位置，然后将食物添加到蛇的身上）
-        old_food_color = food_color
-        f_x, f_y = get_x_y()
-        food_color = get_color()
-        snake_wei = snake_list[len(snake_list) - 1]
-        wei_x = snake_wei["x"]
-        wei_y = snake_wei["y"]
-        wei_derect = snake_wei["derect"]
-        wei_size = snake_wei["size"]
+    # 吃食物
+    def eat(self, food):
+        snake_wei = self.body_list[len(self.body_list) - 1]
+        wei_x = snake_wei.x
+        wei_y = snake_wei.y
+        wei_derect = snake_wei.direction
+        wei_size = self.size
         if wei_derect == "up":
             y = wei_y + wei_size
             x = wei_x
@@ -233,18 +101,98 @@ while True:
         elif wei_derect == "left":
             x = wei_x + wei_size
             y = wei_y
+        #  生成新的蛇身
+        s_body = SnakeBody(x=x, y=y, color=food.color)
+        # 加入到蛇身上
+        self.add(s_body)
 
-        # 蛇身
-        s = {"head": 0, "color": old_food_color, "x": x, "y": y, "derect": wei_derect, "size": wei_size}
-        # 蛇身列表
-        snake_list.append(s)
-        # 加分
-        score += 1
 
-    draw_snake(window)
-    pygame.draw.rect(window, food_color, (f_x, f_y, s_size, s_size))
-    if is_stop:
-        text = pygame.font.SysFont("宋体", 48)
-        text_fm = text.render("Paused !!!!", 1, (255, 0, 0))
-        window.blit(text_fm, (150, 200))
-    pygame.display.update()
+# 食物类
+class Food:
+    def __init__(self, game):
+        self.x = random.randrange(0, game.width - game.size)
+        self.y = random.randrange(0, game.width - game.size)
+        r = random.randrange(0, 256)
+        g = random.randrange(0, 256)
+        b = random.randrange(0, 256)
+        self.color = (r, g, b)
+        self.size = game.size
+
+    # 食物被吃
+    def eated(self, snake):
+        # 判断是否可以被蛇吃
+        if self.x - snake.size < snake.body_list[0].x and snake.body_list[
+            0].x < self.x + snake.size and self.y - snake.size < snake.body_list[0].y and snake.body_list[
+            0].y < self.y + snake.size:
+            # 吃到蛇的肚子里
+            snake.eat(self)
+            # 生成新的食物坐标及颜色
+            self.x = random.randrange(0, game.width - game.size)
+            self.y = random.randrange(0, game.width - game.size)
+            r = random.randrange(0, 256)
+            g = random.randrange(0, 256)
+            b = random.randrange(0, 256)
+            self.color = (r, g, b)
+
+    # 画食物
+    def draw(self, window):
+        pygame.draw.rect(window, self.color, (self.x, self.y, self.size, self.size))
+
+
+# 游戏类
+class SnakeGame:
+    def __init__(self):
+        pygame.init()
+        pygame.display.set_caption("我的贪吃蛇游戏")
+        self.width = 600
+        self.heigth = 600
+        self.window = pygame.display.set_mode((self.width, self.heigth))
+        self.size = 30  # 20*20个格格
+        self.grid = self.width / self.size
+        # 背景色
+        self.b_color = (0, 134, 139)
+
+    # 事件监听
+    def eventListener(self):
+        # 添加键盘事件的监听
+        for even in pygame.event.get():
+            if even.type == pygame.QUIT:
+                sys.exit()
+            elif even.type == pygame.KEYDOWN:
+                if even.key == pygame.K_UP:
+                    direction = "up"
+                    return direction
+                elif even.key == pygame.K_DOWN:
+                    direction = "down"
+                    return direction
+                elif even.key == pygame.K_RIGHT:
+                    direction = "right"
+                    return direction
+                elif even.key == pygame.K_LEFT:
+                    direction = "left"
+                    return direction
+
+    # 启动游戏
+    def start(self):
+        snake = Snake(game=self)
+        food = Food(self)
+        while True:
+            pygame.time.wait(200)
+            # 事件监听
+            direction = self.eventListener()
+            self.window.fill(self.b_color)
+            # 开始移动
+            snake.run(direction)
+            # 画蛇
+            snake.draw(self.window)
+            # 画食物
+            food.draw(self.window)
+            # 食物是否被吃
+            food.eated(snake)
+            # 更新
+            pygame.display.update()
+
+
+if __name__ == "__main__":
+    game = SnakeGame()
+    game.start()
