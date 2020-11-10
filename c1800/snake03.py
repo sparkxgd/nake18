@@ -165,8 +165,8 @@ while True:
         # 蛇身列表
         snake_list.append(s)
         # 加分
-        score +=1
-
+        score += 1
+    # 化蛇
     draw_snake(window)
     pygame.draw.rect(window, food_color, (f_x, f_y, s_size, s_size))
     if is_stop:
