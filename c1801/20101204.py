@@ -25,6 +25,13 @@ def count(name,num,wait):
         time.sleep(1)
         print(name,"的计数：",c)
 
+def count2(name,num,wait):
+
+    c = num
+    while c > 0:
+        c -=1
+        time.sleep(1)
+        print(name,"的计数：",c)
 
 if __name__ == '__main__':
     num = 5
@@ -43,7 +50,7 @@ if __name__ == '__main__':
 
         # 创建一个线程( 函数)
         xianc_a = threading.Thread(count,("计算器A", num, 1))
-        xianc_b = threading.Thread(count, ("计算器B", num, 1))
+        xianc_b = threading.Thread(count2, ("计算器B", num, 1))
 
         start_time = time.clock()
         xianc_a.start()
